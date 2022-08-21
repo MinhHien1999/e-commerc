@@ -17,14 +17,14 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('title');
             $table->integer('stock')->default(1);
-            $table->float('price')->default(0);
+            $table->integer('price')->default(0);
             $table->string('slug')->unique();
             $table->text('image');
             $table->longText('description')->nullable();
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->unsignedBigInteger('cat_id')->nullable();
             $table->unsignedBigInteger('child_cat_id')->nullable();
-            $table->float('discount')->default(0);
+            $table->integer('discount')->default(0);
             $table->enum('status',['active','inactive'])->default('inactive');
 
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('SET NULL');

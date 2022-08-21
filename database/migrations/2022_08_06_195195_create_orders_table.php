@@ -22,9 +22,9 @@ class CreateOrdersTable extends Migration
             $table->string('phone');
             $table->text('address1');
             $table->text('address2')->nullable();
-            $table->float('sub_total');
-            $table->float('coupon')->nullable();
-            $table->float('total_amount');
+            $table->integer('sub_total');
+            $table->integer('coupon')->nullable();
+            $table->integer('total_amount');
             $table->integer('quantity');
             $table->enum('status',['process','delivered','cancel'])->default('process');
             $table->enum('payment_method',['momo','paypal'])->default('momo');

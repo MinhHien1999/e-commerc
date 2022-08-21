@@ -125,16 +125,6 @@
                 // dataType: "json",
                 type: "POST",
                 data: data,
-                // success: function(session){
-                //     console.log(session);
-                    // if (typeof session.fail != "undefined") {
-                    //     swal("error", "500", "error");
-                    // }else{
-                    //     console.log(session);
-                    //     // window.location.href = "{{route('cart')}}";
-                    //     // swal("Good job!", "You clicked the button!", "success");
-                    // }
-                // }
             });
             ajaxCall.done(function(data) {
                 // console.log(data.msg);

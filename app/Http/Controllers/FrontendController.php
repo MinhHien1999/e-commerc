@@ -131,7 +131,14 @@ class FrontendController extends Controller
 
     public function order(Request $request)
     {
-        return Cart::content();
+        $data = array([
+            'cart' => Cart::content(),            
+        ]);
+        if(!empty(session('coupon'))){
+            $coupon = array(['coupon' => session('coupon')]);
+            array_push($data, $coupon);
+        }
+        return $data;
     }
     public function register(SignupRequest $request)
     {

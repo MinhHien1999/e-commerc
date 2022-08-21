@@ -53,7 +53,7 @@
             <div class="col-lg-4">
                 {{-- <form class="mb-5" action=""> --}}
                     <div class="input-group">
-                        <input type="text" class="form-control p-4" placeholder="Coupon Code">
+                        <input type="text" class="form-control p-4" name="coupon" placeholder="Coupon Code">
                         <div class="input-group-append">
                             <button class="btn btn-primary">Apply Coupon</button>
                         </div>
@@ -66,20 +66,33 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium" id="cartSubTotal">{{Cart::count() > 0 ? Cart::subtotal(0,'.',',').' đ' : 0}}</h6>
+                            <h6 class="font-weight-medium" id="cartSubTotal">{{Cart::count() > 0 ? Cart::subtotal(0,',','.').' đ' : 0}}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
+                            @if(!empty(session('coupon')))
+                                <h6 class="font-weight-medium">Coupon</h6>
+                                <h6 class="font-weight-medium" id="coupon">
+                                    {{'-'.number_format(session('coupon')['value'], 0, '', '.').' đ'}}
+                                </h6>
+                            @endif
                         </div>
                     </div>
+                    {{-- @dd(session('coupon')) --}}
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold" id="cartTotal">{{Cart::subtotal(0,'.',',').' đ'}}</h5>
+                            {{-- @dd(session('coupon')) --}}
+                            <h5 class="font-weight-bold" id="cartTotal">
+                                @if (!empty(session('coupon')))
+                                    {{-- {{session('coupon')['value']}} --}}
+                                    {{number_format(round(intval(str_replace('.', '', Cart::subtotal()))) - session('coupon')['value'], 0, '', '.').' đ'}}
+                                @else
+                                    {{Cart::subtotal(0,',','.').' đ'}}
+                                @endif
+                            </h5>
                         </div>
                         <button type="update" class="btn btn-block btn-primary my-3 py-3" name="update" value="update">Update</button>
-                        <button type="submit" class="btn btn-block btn-primary my-3 py-3" name="submit" value="submit">Proceed To Checkout</button>
+                        <a href="{{route('checkout')}}"class="btn btn-block btn-primary my-3 py-3" name="submit" value="submit">Proceed To Checkout</a>
                     </div>
                 </div>
             </div>
@@ -109,12 +122,13 @@
             item.remove();
             $("span#badge").text(response.data.count)
             $("h6#cartSubTotal").text(response.data.subtotal);
-            $("h5#cartTotal").text(response.data.subtotal);
+            $("h6#coupon").text(response.data.coupon);
+            $("h5#cartTotal").text(response.data.total);
             if(response.data.count === 0){
                 $("form.cartdata").remove();
                 $("div#cartdata").append("<h1 style='text-align: center;'>Your Cart is Empty</h1>");
             }
-            // console.log(response.count);
+            console.log(response.data.count);
         })
     })
     $("button[name=update]").click(function (){

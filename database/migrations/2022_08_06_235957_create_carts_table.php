@@ -17,10 +17,10 @@ class CreateCartsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('order_id');
-            $table->float('price');
+            $table->integer('price');
             $table->enum('status',['new','progress','delivered','cancel'])->default('new');
             $table->integer('quantity');
-            $table->float('amount');
+            $table->integer('amount');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('CASCADE');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('CASCADE');
             $table->timestamps();

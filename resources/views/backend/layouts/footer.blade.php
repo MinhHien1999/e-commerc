@@ -36,7 +36,6 @@
 <script src="{{asset('vendor/laravel-filemanager/js/stand-alone-button.js')}}"></script>
 <script>
     // $('#lfm').filemanager('image');
-
     $(document).ready(function() {
         $('#summernote').summernote();
     });
@@ -48,10 +47,6 @@
     });
 </script>
 <script>
-    // $('.nav-item').click(function() {
-    //     var check = $(this).val();
-    //     console.log(check);
-    // })
     setTimeout(function (){
         $('.alert').fadeOut();
     },5000);
