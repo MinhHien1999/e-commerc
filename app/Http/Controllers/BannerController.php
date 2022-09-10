@@ -16,7 +16,7 @@ class BannerController extends Controller
     public function index()
     {
         $dataBanner = Banner::orderBy('id', 'DESC')->get();
-        return view('backend.banner.index',compact('dataBanner'));
+        return view('backend.banner.index', compact('dataBanner'));
     }
 
     /**
@@ -41,14 +41,15 @@ class BannerController extends Controller
         $request->validate([
             'title' => 'bail|required',
             'image' => 'bail|required|mimes:jpeg,bmp,png',
-            'status'=>'in:active,inactive',
+            'status' => 'in:active,inactive',
         ]);
         // dd($request->all());
         $data = new Banner;
 
         $data->title = $request->title;
+        $data->url = $request->url;
         $data->description = $request->description;
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $newImageName = time() . '-' . $request->image->getClientOriginalName();
             $request->image->move(public_path('upload'), $newImageName);
             $data->image = $newImageName;
@@ -81,11 +82,10 @@ class BannerController extends Controller
         //
         $dataBanner = Banner::find($id);
         // dd($dataBanner)
-        if($dataBanner == null){
+        if ($dataBanner == null) {
             return back()->with('error', 'data not found');
-
-        }else{
-            return view('backend.banner.edit',compact('dataBanner'));
+        } else {
+            return view('backend.banner.edit', compact('dataBanner'));
         }
     }
 
@@ -100,21 +100,21 @@ class BannerController extends Controller
     {
         $request->validate([
             'title' => 'bail|required',
-            'status'=>'required|in:active,inactive',
+            'status' => 'required|in:active,inactive',
         ]);
         $data = $request->all();
         $banner = Banner::find($id);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $newImageName = time() . '-' . $request->image->getClientOriginalName();
             $request->image->move(public_path('upload'), $newImageName);
             $request->image = $newImageName;
             $data['image'] =  $newImageName;
         }
-        if($banner){
+        if ($banner) {
             $banner->fill($data)->update();
             return back()->with('message', 'successfully');
-        }else{
+        } else {
             return back()->with('error', 'data not found');
         }
     }
@@ -129,17 +129,18 @@ class BannerController extends Controller
     {
         //
         $banner = Banner::find($id);
-        if($banner == true){
+        if ($banner == true) {
             $banner->delete();
             return back()->with('message', 'successfully');
-        }else{
+        } else {
             return back()->with('error', 'data not found');
         }
     }
-    public function status(Request $request){
-        if($request->check == 'true'){
+    public function status(Request $request)
+    {
+        if ($request->check == 'true') {
             Banner::findOrFail($request->id)->update(['status' => 'active']);
-        }else{
+        } else {
             Banner::findOrFail($request->id)->update(['status' => 'inactive']);
         }
         return response()->json(['message' => 'successfully']);

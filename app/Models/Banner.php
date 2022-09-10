@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Cviebrock\EloquentSluggable\Sluggable;
 
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +15,7 @@ class Banner extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'title', 'slug', 'description', 'image','status'
+        'title', 'slug', 'description', 'image', 'url', 'status'
     ];
 
     public function sluggable()
@@ -26,7 +27,8 @@ class Banner extends Model
         ];
     }
 
-    public static function getBanner(){
-        return Banner::where('status','active')->limit(3)->orderBy('id','DESC')->get();
+    public static function getBanner()
+    {
+        return Banner::where('status', 'active')->limit(3)->orderBy('id', 'DESC')->get();
     }
 }

@@ -84,8 +84,12 @@
                             {{-- @dd(session('coupon')) --}}
                             <h5 class="font-weight-bold" id="cartTotal">
                                 @if (!empty(session('coupon')))
-                                    {{-- {{session('coupon')['value']}} --}}
+                                    @if(session('coupon')['value'] > round(intval(str_replace('.', '', Cart::subtotal()))))
+                                        {{'0 đ'}}
+                                    @else
                                     {{number_format(round(intval(str_replace('.', '', Cart::subtotal()))) - session('coupon')['value'], 0, '', '.').' đ'}}
+                                    @endif
+                                    {{-- {{session('coupon')['value']}} --}}
                                 @else
                                     {{Cart::subtotal(0,',','.').' đ'}}
                                 @endif
@@ -96,9 +100,12 @@
                     </div>
                 </div>
             </div>
+            {{App\Models\Coupon::getCoupon(session('coupon'))}}
+            {{-- @dd(session()) --}}
         </form>
     @else
         <h1 style="text-align: center;">Your Cart is Empty</h1>
+        {{-- @dd(session('coupon')) --}}
     @endif
 </div>
 <!-- Cart End -->
@@ -128,7 +135,7 @@
                 $("form.cartdata").remove();
                 $("div#cartdata").append("<h1 style='text-align: center;'>Your Cart is Empty</h1>");
             }
-            console.log(response.data.count);
+            console.log(response.data);
         })
     })
     $("button[name=update]").click(function (){

@@ -1,31 +1,34 @@
 <div id="header-carousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
         <?php
-        $firstBanner = \App\Models\Banner::where('status','active')->orderBy('id','DESC')->first();
+            $firstBanner = \App\Models\Banner::where('status','active')->orderBy('id','DESC')->first();
         ?>
-        <div class="carousel-item active" style="height: 410px;">
-            <img class="img-fluid" src="{{$firstBanner->image}}" alt="Image">
-{{--            <img class="img-fluid" src="{{asset('frontend')}}/img/carousel-1.jpg" alt="Image">--}}
-            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                <div class="p-3" style="max-width: 700px;">
-                    <h4 class="text-light text-uppercase font-weight-medium mb-3">100% Off Your First Order</h4>
-                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">{{$firstBanner->title}}</h3>
-                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+        @if(!empty($firstBanner))
+            <div class="carousel-item active" style="height: 410px;">
+                <img class="img-fluid" src="{{$firstBanner->image}}" alt="Image">
+               <img class="img-fluid" src="{{asset('upload')}}/{{$firstBanner->image}}" alt="Image">
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                    <div class="p-3" style="max-width: 700px;">
+                        <h4 class="text-light text-uppercase font-weight-medium mb-3">100% Off Your First Order</h4>
+                            <h3 class="display-4 text-white font-weight-semi-bold mb-4">{{$firstBanner->title}}</h3>
+                        <a href="{{$firstBanner->url}}" class="btn btn-light py-2 px-3">Shop Now</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        @foreach($banners->except($firstBanner->id) as $banner)
-        <div class="carousel-item" style="height: 410px;">
-            <img class="img-fluid" src="{{$banner->image}}" alt="Image">
-            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                <div class="p-3" style="max-width: 700px;">
-                    <h4 class="text-light text-uppercase font-weight-medium mb-3"></h4>
-                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">{{$banner->title}}</h3>
-                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+        {{-- @if(!empty($firstBanner)) --}}
+            @foreach($banners->except($firstBanner->id) as $banner)
+                <div class="carousel-item" style="height: 410px;">
+                    <img class="img-fluid" src="{{asset('upload')}}/{{$banner->image}}" alt="Image">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <div class="p-3" style="max-width: 700px;">
+                            <h4 class="text-light text-uppercase font-weight-medium mb-3"></h4>
+                            <h3 class="display-4 text-white font-weight-semi-bold mb-4">{{$banner->title}}</h3>
+                            <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        @endforeach
+            @endforeach
+        {{-- @endif --}}
     </div>
     <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
         <div class="btn btn-dark" style="width: 45px; height: 45px;">
@@ -37,4 +40,5 @@
             <span class="carousel-control-next-icon mb-n2"></span>
         </div>
     </a>
+    @endif
 </div>

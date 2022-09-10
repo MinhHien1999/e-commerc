@@ -39,17 +39,23 @@ class CartController extends Controller
             0,
             ['discount' => $product->discount, 'image' => $product->image]
         );
-
         $this->checkCoupon();
         return response()->json(['msg' => 'success']);
     }
     public function delete(Request $request)
     {
         $result = Cart::remove($request->id);
-
         if ($this->checkCoupon()) {
             if (Cart::count() == 0) {
                 Session::forget('coupon');
+            }
+            if (session('coupon')['value'] > round(intval(str_replace('.', '', Cart::subtotal())))) {
+                return response()->json(['data' => [
+                    'count' => Cart::count(),
+                    'subtotal' => Cart::subtotal(0, '.', ',') . ' đ',
+                    'coupon' => '-' . number_format(session('coupon')['value'], 0, '', '.') . ' đ',
+                    'total' => '0 đ'
+                ]]);
             }
             return response()->json(['data' => [
                 'count' => Cart::count(),
@@ -69,38 +75,43 @@ class CartController extends Controller
     {
         if (!empty(session('coupon'))) {
             $dataCoupon = Coupon::getCoupon(session('coupon')['code']);
-            $total_price = round(intval(str_replace('.', '', Cart::subtotal())));
-            session()->put('coupon', [
-                'id' => $dataCoupon->id,
-                'code' => $dataCoupon->code,
-                'type' => $dataCoupon->type,
-                'value' => $dataCoupon->discount($dataCoupon->value, $dataCoupon->type, $total_price)
-            ]);
-            return true;
+            if (count($dataCoupon) == 1) {
+                $total_price = round(intval(str_replace('.', '', Cart::subtotal())));
+                session()->put('coupon', [
+                    'id' => $dataCoupon[0]['id'],
+                    'code' => $dataCoupon[0]['code'],
+                    'type' => $dataCoupon[0]['type'],
+                    'value' => Coupon::discount($dataCoupon[0]['value'], $dataCoupon[0]['type'], $total_price)
+                ]);
+                return true;
+            }
+            return false;
         }
         return false;
     }
     public function update(Request $request)
     {
         // dd($request->all());
-
         if (!empty($request->coupon)) {
-            try {
-                $dataCoupon = Coupon::getCoupon($request->coupon);
+            $dataCoupon = Coupon::getCoupon($request->coupon);
+            if (count($dataCoupon) == 1) {
+                // return $dataCoupon[0]['code'];
                 $total_price = round(intval(str_replace('.', '', Cart::subtotal())));
                 session()->put('coupon', [
-                    'id' => $dataCoupon->id,
-                    'code' => $dataCoupon->code,
-                    'type' => $dataCoupon->type,
-                    'value' => $dataCoupon->discount($dataCoupon->value, $dataCoupon->type, $total_price)
+                    'id' => $dataCoupon[0]['id'],
+                    'code' => $dataCoupon[0]['code'],
+                    'type' => $dataCoupon[0]['type'],
+                    'value' => Coupon::discount($dataCoupon[0]['value'], $dataCoupon[0]['type'], $total_price)
                 ]);
-                return redirect()->route('cart')->with('message', 'Your coupon discount has been applied');
-            } catch (ModelNotFoundException $e) {
+                // return session('coupon');
+            } else {
+                // return 'ahuhu';
                 return redirect()->back()->with('error', 'Invalid Coupon');
             }
         }
+
         foreach ($request->id as $rId => $id) {
-            if (Product::find($id)->stock > $request->qty[$rId]) {
+            if (Product::find($id)->stock >= $request->qty[$rId]) {
                 Cart::update($rId, $request->qty[$rId]);
             } else {
                 // $name = Product::find($id)->name;

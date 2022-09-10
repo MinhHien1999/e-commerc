@@ -41,6 +41,10 @@
                     <input type="text" name="title" class="form-control" placeholder="Title" value="{{old('title')}}">
                   </div>
                   <div class="form-group">
+                    <label for="exampleInputTitle">URl Product</label>
+                    <input type="text" name="url" class="form-control" placeholder="URL Product" value="{{old('url')}}">
+                  </div>
+                  <div class="form-group">
                     <label for="exampleInputDescription">Description</label>
                       <textarea name="description" id="summernote">
                         {{old('description')}}

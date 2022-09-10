@@ -15,7 +15,7 @@ class Coupon extends Model
     ];
     public static function getCoupon($code)
     {
-        return Coupon::where(['code' => $code, 'status' => 'active'])->firstOrFail();
+        return Coupon::where(['code' => $code, 'status' => 'active'])->get();
     }
 
     public static function discount($valueCoupon, $typeCoupon, $totalPrice)

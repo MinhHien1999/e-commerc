@@ -15,7 +15,7 @@ class Product extends Model
 
     protected $fillable = [
         'title', 'slug', 'description', 'image',
-        'quantity', 'price', 'brand_id',
+        'stock', 'price', 'brand_id',
         'cat_id', 'child_cat_id', 'discount', 'status'
 
     ];
@@ -36,6 +36,10 @@ class Product extends Model
     public function brand()
     {
         return $this->hasOne('App\Models\Brand', 'id', 'brand_id');
+    }
+    public function cart()
+    {
+        return $this->hasOne('App\Models\Cart', 'product_id', 'id');
     }
     public static function getAllProduct()
     {

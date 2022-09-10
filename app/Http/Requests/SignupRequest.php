@@ -31,16 +31,16 @@ class SignupRequest extends FormRequest
         ];
     }
 
-    public function messages()
-    {
-        return [
-            'name.required' => 'Name không được để trống',
+    // public function messages()
+    // {
+    //     return [
+    //         'name.required' => 'Name không được để trống',
 
-            'email.required' => 'Email không được để trống',
-            'email.unique' => 'Email đã được đăng kí',
+    //         'email.required' => 'Email không được để trống',
+    //         'email.unique' => 'Email đã được đăng kí',
 
-            'password.required' => 'Password không được để trống',
-            'password.min' => 'Password tối thiểu 8 kí tự',
-        ];
-    }
+    //         'password.required' => 'Password không được để trống',
+    //         'password.min' => 'Password tối thiểu 8 kí tự',
+    //     ];
+    // }
 }

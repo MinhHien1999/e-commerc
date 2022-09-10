@@ -8,9 +8,9 @@
         <div class="col-lg-4 nav-item dropdown">
             {{-- <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a> --}}
             {{-- <div class="dropdown-menu rounded-0 m-0"> --}}
-                <a href="cart.html" class="dropdown-item" style="text-align:center">Shopping Cart</a>
-                <a href="{{route('user.orders')}}" class="dropdown-item" style="text-align:center">Orders</a>
-                <a href="{{route('user.address')}}" class="dropdown-item" style="text-align:center">Address</a>
+                {{-- <a href="cart.html" class="dropdown-item" style="text-align:center">Shopping Cart</a> --}}
+                <a href="{{route('user.orders',Auth::user()->id)}}" class="dropdown-item" style="text-align:center">Orders</a>
+                {{-- <a href="{{route('user.address')}}" class="dropdown-item" style="text-align:center">Address</a> --}}
             {{-- </div> --}}
         </div>
         <div class="col-lg-8">
@@ -25,17 +25,17 @@
                     </tr>
                 </thead>
                 <tbody class="align-middle">
-                    @foreach(Cart::content() as $item)
-                        <tr item="{{$item->rowId}}">
+                    @foreach($Orders as $Order)
+                        <tr item="{{$Order->id}}">
                             <td class="align-middle">
-                                #123
+                                {{'#'.$Order->id}}
                             </td>
-                            <td class="align-middle">{{number_format($item->price,0,',','.').' đ'}}</td>
-                            <td class="align-middle">
-                                pending
+                            <td class="align-middle">{{date('d-m-Y H:i:s', strtotime($Order->created_at))}}</td>
+                            <td class="align-middle" style="color: <?php if($Order->status == "processing") {echo "blue";} elseif($Order->status == "delivered") {echo "green";} else echo "black";?>">
+                                {{ucfirst($Order->status)}}
                             </td>
-                            <td class="align-middle">{{number_format($item->price * $item->qty,0,',','.').' đ'}}</td>
-                            <td class="align-middle"><a class="btn btn-sm btn-primary deleteCart" data="{{$item->rowId}}"><i class="fa fa-times"></i></a></td>
+                            <td class="align-middle">{{number_format($Order->total_amount,0,',','.').' đ'}}</td>
+                            <td class="align-middle"><a class="btn btn-sm btn-primary deleteCart" data="{{$Order->id}}"><i class="fa fa-times"></i></a></td>
                         </tr>
                     @endforeach
                 </tbody>

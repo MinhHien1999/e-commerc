@@ -15,27 +15,27 @@ use Illuminate\Support\Facades\Route;
 //Frontend Route
 route::get('/', 'FrontendController@index')->name('home');
 Route::get('/cart', 'FrontendController@cart')->name('cart');
-Route::get('/checkout', 'FrontendController@checkout')->name('checkout');
-Route::post('/checkout', 'FrontendController@order')->name('order');
+Route::get('/checkout', 'FrontendController@showCheckOut')->name('checkout');
+Route::post('/checkout', 'OrderController@order')->name('order');
 route::get('/collections', 'FrontendController@shop')->name('shop');
 
-route::get('/collections/{slug}','FrontendController@productCat')->name('product-cat');
-route::get('/product/{slug}','FrontendController@productDetail')->name('product-detail');
-route::post('/product/search','FrontendController@autoSearch')->name('auto-search');
-route::get('/search','FrontendController@productSearch')->name('product-search');
+route::get('/collections/{slug}', 'FrontendController@productCat')->name('product-cat');
+route::get('/product/{slug}', 'FrontendController@productDetail')->name('product-detail');
+route::post('/product/search', 'FrontendController@autoSearch')->name('auto-search');
+route::get('/search', 'FrontendController@productSearch')->name('product-search');
 
 //Cart
 Route::post('/cart/update', 'CartController@update')->name('update-cart');
 route::post('/cart/store', 'CartController@store')->name('add-cart');
 route::delete('/cart/delete', 'CartController@delete')->name('delete-cart');
 //user
-Route::prefix('user')->group( function (){
+Route::prefix('user')->group(function () {
     route::get('/register', 'FrontendController@showRegisterForm')->name('user.register');
     Route::get('/login', 'FrontendController@showLoginForm')->name('user.login');
     route::post('/register', 'FrontendController@register')->name('user.register.submit');
     Route::post('/login', 'FrontendController@login')->name('user.login.submit');
-    Route::get('/logout', 'FrontendController@logout')->name('user.logout');
     Route::group(['middleware' => ['is_user']], function () {
+        Route::get('/logout', 'FrontendController@logout')->name('user.logout');
         route::get('/dashboard', 'FrontendController@getUserDashboard')->name('user.dashboard');
         route::get('/address', 'FrontendController@getUserAddress')->name('user.address');
         route::get('/order', 'FrontendController@getUserOrders')->name('user.orders');
@@ -70,13 +70,16 @@ Route::prefix('admin')->group(function () {
         //Coupon route
         route::resource('/coupon', 'CouponController');
         route::post('couponStatus', 'CouponController@status')->name('coupon.status');
+        //order route
+        route::resource('/order', 'OrderController');
+        route::post('orderStatus', 'OrderController@status')->name('order.status');
     });
- });
+});
 
 
 
 
 
-Route::group(['prefix' => 'laravel-filemanager'], function (){
+Route::group(['prefix' => 'laravel-filemanager'], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });

@@ -6,7 +6,7 @@
     <div class="row px-xl-5">
         <div class="col-lg-4 nav-item dropdown">
             <a href="cart.html" class="dropdown-item" style="text-align:center">Shopping Cart</a>
-            <a href="{{route('user.orders')}}" class="dropdown-item" style="text-align:center">Orders</a>
+            <a href="{{route('user.orders',Auth::user()->id)}}" class="dropdown-item" style="text-align:center">Orders</a>
             <a href="{{route('user.address')}}" class="dropdown-item" style="text-align:center">Address</a>
         </div>
         <form method="post" action="{{route('order')}}" class="col-lg-8">

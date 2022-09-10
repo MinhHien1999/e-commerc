@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Banner;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Cart as Carts;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\SignupRequest;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 use Cart;
+use DB;
 use Session;
 
 class FrontendController extends Controller
@@ -24,7 +27,17 @@ class FrontendController extends Controller
     public function index()
     {
         $banners = Banner::getBanner();
-        return view('frontend.index', compact('banners'));
+        //top sell
+        $top_sellers = DB::table('products')->join('carts', 'products.id', '=', 'carts.product_id')
+            ->select('product_id', DB::raw('COUNT(product_id) as countProduct'))
+            ->groupBy('product_id')->orderBy('countProduct', 'DESC')->limit(9)->get();
+        $product = [];
+        foreach ($top_sellers as $item) {
+            array_push($product, $item->product_id);
+        }
+        $productTopSeller = product::whereIn('id', $product)->where('status', 'active')->get();
+        // return $productTopSeller;
+        return view('frontend.index', compact('banners', 'productTopSeller'));
     }
     public function shop()
     {
@@ -124,24 +137,26 @@ class FrontendController extends Controller
         return view('frontend.pages.product-search', compact('productSearch'));
     }
 
-    public function checkout()
+    public function showCheckOut()
     {
-        return view('frontend.pages.checkout');
+        $coupon = array();
+        if (Cart::count() <= 0) {
+            return redirect()->route('cart')->with('error', 'Cart Null');
+        }
+        if (!empty(session('coupon'))) {
+            $coupon = session('coupon');
+        }
+        $cart = Cart::content();
+        return view('frontend.pages.checkout', compact('coupon', 'cart'));
     }
 
-    public function order(Request $request)
-    {
-        $data = array([
-            'cart' => Cart::content(),            
-        ]);
-        if(!empty(session('coupon'))){
-            $coupon = array(['coupon' => session('coupon')]);
-            array_push($data, $coupon);
-        }
-        return $data;
-    }
     public function register(SignupRequest $request)
     {
+        // $request->validate([
+        //     'email' => 'bail|required|email',
+        //     'password' => 'bail|required',
+        // ]);
+
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
@@ -153,10 +168,15 @@ class FrontendController extends Controller
     }
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'bail|required|email',
+            'password' => 'bail|required',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('home')->with('success', 'Successfully Login');
+            return redirect()->intended('/')->with('success', 'Successfully Login');
         } else {
             request()->session()->flash('error', 'Invalid email and password pleas try again!');
             return redirect()->back()->withInput($request->only('email'));
@@ -181,7 +201,11 @@ class FrontendController extends Controller
     }
     public function getUserOrders()
     {
-        return view('frontend.user.orders');
+        if (Auth::check()) {
+            $Orders = Order::getOrderUser(Auth::user()->id);
+            // return $Orders;
+            return view('frontend.user.orders', compact('Orders'));
+        }
     }
     public function getUserAddress()
     {

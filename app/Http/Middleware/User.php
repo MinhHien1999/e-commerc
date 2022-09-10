@@ -15,7 +15,7 @@ class User
      */
     public function handle($request, Closure $next)
     {
-        if(Auth()->check()){
+        if (Auth()->check()) {
             return $next($request);
         }
         return redirect()->route('home');
