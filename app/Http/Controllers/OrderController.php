@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use App\User;
 use Cart;
 use Session;
+use Mail;
+use App\Mail\MailNotify;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderController extends Controller
@@ -147,6 +149,9 @@ class OrderController extends Controller
                 }
                 $product->update();
             }
+            $OrderData = Order::find($order->id);
+            $OrderDetailData = Carts::with('product')->where('order_id', $order->id)->get();
+            Mail::to($order->email)->send(new MailNotify($OrderData, $OrderDetailData));
             Cart::destroy();
         }
         return redirect()->route('home')->with('message', 'Buy successfully');

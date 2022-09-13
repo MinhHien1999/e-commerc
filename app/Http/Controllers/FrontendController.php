@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\User;
 use Cart;
 use DB;
+use Mail;
 use Session;
 
 class FrontendController extends Controller
@@ -46,8 +47,11 @@ class FrontendController extends Controller
     public function productCat(Request $request, $slug)
     {
         $category = Category::getCategory($slug);
-        // $category = Category::where('slug', $slug)->firstOrFail();
         $productCat = Product::getProductCat($category->id);
+
+        if (count($productCat) == 0) {
+            $productCat = Product::getProductCatChild($category->id);
+        }
         // return $productCat;
         $sort = request()->query('sort');
         $route = request()->segment(1);

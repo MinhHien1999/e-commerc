@@ -94,12 +94,12 @@
                                 <div class="card product-item border-0 mb-4">
                                     <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                                         @if(!empty($prod->discount) || $prod->discount > 0)
-                                        <div class="new-product-percent" style="background: url({{asset('frontend')}}/img/icon-saleoff.png) no-repeat scroll center center transparent; position: absolute;width: 48px;height: 51px;padding-top: 12px;color: #180733;font-size: 17px;text-align: center;">
-                                            {{ $prod->discount.'%'}}
-                                        </div>
+                                            <div class="new-product-percent" style="background: url({{asset('frontend')}}/img/icon-saleoff.png) no-repeat scroll center center transparent; position: absolute;width: 48px;height: 51px;padding-top: 12px;color: #180733;font-size: 17px;text-align: center;">
+                                                {{ $prod->discount.'%'}}
+                                            </div>
                                         @endif
                                        {{-- <img class="img-fluid w-100" src="{{asset('frontend')}}/img/product-1.jpg" alt=""> --}}
-                                        <img class="img-fluid w-100" src="{{$prod->image}}" alt="">
+                                        <img class="img-fluid w-100" src="{{URL('upload/product/'.$prod->image)}}" alt="">
                                     </div>
                                     <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                         <h6 class="text-truncate mb-3">{{$prod->title}}</h6>

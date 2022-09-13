@@ -17,7 +17,7 @@ class ProductController extends Controller
     {
         $dataProduct = Product::getAllProduct();
         // return $dataProduct;
-        return view('backend.product.index',compact('dataProduct'));
+        return view('backend.product.index', compact('dataProduct'));
     }
 
     /**
@@ -40,34 +40,36 @@ class ProductController extends Controller
     {
         //
         $request->validate([
-            'title'=>'bail|required|string',
+            'title' => 'bail|required|string',
             'image' => 'bail|required|mimes:jpeg,bmp,png',
-            'description'=>'bail|string|nullable',
+            'description' => 'bail|string|nullable',
             'price' => 'bail|required|min:0',
             'stock' => 'bail|required|numeric|min:1',
-            'cat_id'=>'bail|required|exists:categories,id',
-            'brand_id'=>'bail|nullable|exists:brands,id',
-            'child_cat_id'=>'bail|nullable|exists:categories,id',
-            'status'=>'bail|required|in:active,inactive',
-            'price'=>'bail|required|numeric',
-            'discount'=>'bail|nullable|numeric|max:100',
+            'cat_id' => 'bail|required|exists:categories,id',
+            'brand_id' => 'bail|nullable|exists:brands,id',
+            'child_cat_id' => 'bail|nullable|exists:categories,id',
+            'status' => 'bail|required|in:active,inactive',
+            'price' => 'bail|required|numeric',
+            'discount' => 'bail|nullable|numeric|max:100',
         ]);
         $data = $request->all();
-//         dd($data);
-        if($request->hasFile('image')){
+        //         dd($data);
+        if (empty($data['discount']))
+            $data['discount'] = 0;
+        if ($request->hasFile('image')) {
             $newImageName = time() . '-' . $request->image->getClientOriginalName();
             $request->image->move(public_path('upload/product'), $newImageName);
             $data['image'] = $newImageName;
         }
-//        dd($data);
+        //        dd($data);
         $status = Product::create($data);
-        if($status){
+        if ($status) {
             return redirect()->route('product.index')->with('message', 'successfully');
-        }else{
+        } else {
             return back()->with('error', 'something went wrong');
         }
         // // dd($data);
-//        dd($request->file('image')->getClientOriginalExtension());
+        //        dd($request->file('image')->getClientOriginalExtension());
     }
 
     /**
@@ -90,9 +92,9 @@ class ProductController extends Controller
     public function edit($id)
     {
         $dataProduct = Product::find($id);
-        if(!empty($dataProduct)){
-            return view('backend.product.edit',compact('dataProduct'));
-        }else{
+        if (!empty($dataProduct)) {
+            return view('backend.product.edit', compact('dataProduct'));
+        } else {
             return redirect()->route('product.index')->with('error', 'data not found');
         }
     }
@@ -108,51 +110,51 @@ class ProductController extends Controller
     {
         //
         $request->validate([
-            'title'=>'bail|required|string',
+            'title' => 'bail|required|string',
             'image' => 'bail|mimes:jpeg,bmp,png',
-            'description'=>'bail|string|nullable',
+            'description' => 'bail|string|nullable',
             'price' => 'bail|required|min:0',
             'stock' => 'bail|required|numeric|min:1',
-            'cat_id'=>'bail|required|exists:categories,id',
-            'brand_id'=>'bail|nullable|exists:brands,id',
-            'child_cat_id'=>'bail|nullable|exists:categories,id',
-            'status'=>'bail|required|in:active,inactive',
-            'price'=>'bail|required|numeric',
-            'discount'=>'bail|nullable|numeric|max:100'
+            'cat_id' => 'bail|required|exists:categories,id',
+            'brand_id' => 'bail|nullable|exists:brands,id',
+            'child_cat_id' => 'bail|nullable|exists:categories,id',
+            'status' => 'bail|required|in:active,inactive',
+            'price' => 'bail|required|numeric',
+            'discount' => 'bail|nullable|numeric|max:100'
         ]);
-//        dd(empty($request->child_cat_id));
+        //        dd(empty($request->child_cat_id));
         $data = $request->all();
         $product = Product::find($id);
         $cat_child_id = Category::where('parent_id', $request->cat_id)->get();
-//        dd($data);
-        if(empty($request->discount)){
+        //        dd($data);
+        if (empty($request->discount)) {
             $data['discount'] = 0;
         }
-        if(empty($request->child_cat_id))
+        if (empty($request->child_cat_id))
             $data['child_cat_id'] = null;
-        if(count($cat_child_id) == 0){
+        if (count($cat_child_id) == 0) {
             $data['child_cat_id'] = null;
-        }else{
-             foreach ($cat_child_id as $key => $value) {
-                 if ($value->id == $request->child_cat_id) {
-                     $data['child_cat_id'] = $request->child_cat_id;
-                     break;
-                 }else{
+        } else {
+            foreach ($cat_child_id as $key => $value) {
+                if ($value->id == $request->child_cat_id) {
+                    $data['child_cat_id'] = $request->child_cat_id;
+                    break;
+                } else {
                     $data['child_cat_id'] = null;
-                 }
-             }
+                }
+            }
         }
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $newImageName = time() . '-' . $request->image->getClientOriginalName();
             $request->image->move(public_path('upload/product'), $newImageName);
             $request->image = $newImageName;
             $data['image'] =  $newImageName;
         }
-        if($product){
+        if ($product) {
             $product->fill($data)->update();
             return redirect()->route('product.index')->with('message', 'successfully');
-        }else{
+        } else {
             return back()->with('error', 'data not found');
         }
     }
@@ -166,21 +168,21 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id);
-        if($product == true){
+        if ($product == true) {
             $product->delete();
             return redirect()->route('product.index')->with('message', 'Product successfully deleted');
-        }else{
-            return back()->with('error','Please try again!');
+        } else {
+            return back()->with('error', 'Please try again!');
         }
     }
 
-    public function status(Request $request){
-        if($request->check == 'true'){
+    public function status(Request $request)
+    {
+        if ($request->check == 'true') {
             Product::findOrFail($request->id)->update(['status' => 'active']);
-        }else{
+        } else {
             Product::findOrFail($request->id)->update(['status' => 'inactive']);
         }
         return response()->json(['message' => 'update successfully']);
     }
-
 }

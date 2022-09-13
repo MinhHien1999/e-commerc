@@ -67,7 +67,7 @@
                         {!! $banner->description !!}
                       </p>
                     </td>
-                    <td style="text-align: center;"><img src="{{URL('upload/'.$banner->image)}}" alt="" width="15%" height="20%"></td>
+                    <td style="text-align: center;"><img src="{{URL('upload/banner/'.$banner->image)}}" alt="" width="15%" height="20%"></td>
                     <td style="text-align: center;">
                       @if($banner->status == 'active')
                         <input type="checkbox" checked name="status" data-toggle="toggle" data-on="Active" data-off="inactive" data-onstyle="success" data-offstyle="danger" value="{{$banner->id}}">

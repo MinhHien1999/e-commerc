@@ -57,10 +57,10 @@
                                     <tbody>
                                     @foreach ($dataProduct as $product)
                                         @php
-                                            $productDetail = \App\Models\Product::where('id',$product->id)->first();
-                                            $BrandDetail = \App\Models\Brand::where('id',$product->brand_id)->first();
+                                            $productDetail = \App\Models\Product::where('id',$product->id)->with('brand')->first();
+                                            // $BrandDetail = \App\Models\Brand::where('id',$product->brand_id)->first();
                                             $CategoryDetail = \App\Models\Category::where(['id' => $product->cat_id, 'is_parent' => 1])->first();
-                                            $CategoryChildDetail = \App\Models\Category::where(['parent_id' => $product->cat_id, 'is_parent' => 0])->first();
+                                            $CategoryChildDetail = \App\Models\Category::where(['id' => $product->child_cat_id, 'is_parent' => 0])->first();
                                         @endphp
                                         <tr id="item-{{$product->id}}">
                                             <td style="text-align: center;">
@@ -80,7 +80,7 @@
                                             </td>
                                             <td style="text-align: center;">
                                                 <p style="color:white;">
-                                                    {{$BrandDetail->title}}
+                                                    {{$product->brand['title']}}
                                                 </p>
                                             </td>
 {{--                                            <td>--}}
@@ -103,7 +103,7 @@
 {{--                                                    {!! $product->description !!}--}}
 {{--                                                </p>--}}
 {{--                                            </td>--}}
-                                            <td style="text-align: center;"><img src="{{URL($product->image)}}" alt=""></td>
+                                            <td style="text-align: center;"><img src="{{URL('upload/'.request()->segment(2).'/'.$product->image)}}" alt="" style="width:100px;height:100px;"></td>
 {{--                                            <td><img src="{{URL('upload/'.request()->segment(2).'/'.$product->image)}}" alt="" width="15%" height="20%"></td>--}}
                                             <td style="text-align: center;">
                                                 @if($product->status == 'active')
@@ -165,16 +165,17 @@
                                                                 <div class="row">
                                                                     <div class="col-md-6">
                                                                         <strong style="color: white">Brand:</strong>
-                                                                        <p style="color: white">{{$BrandDetail->title}}</p>
+                                                                        <p style="color: white">{{$product->brand['title']}}</p>
                                                                     </div>
                                                                     <div class="col-md-6">
                                                                         <strong style="color: white">Category:</strong>
-                                                                        <p style="color: white">{{$CategoryDetail['title']}}</p>
+                                                                        <p style="color: white">{{$product->category['title']}}</p>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
                                                                     <div class="col-md-6">
                                                                         <strong style="color: white">Category Child:</strong>
+                                                                        {{-- @dd($product) --}}
                                                                         <p style="color: white">{{$CategoryChildDetail['title']}}</p>
                                                                     </div>
                                                                     <div class="col-md-6">
@@ -197,7 +198,7 @@
                                                                 <div class="row">
                                                                     <div class="col-md-12">
                                                                         <strong style="color: white">Image:</strong>
-                                                                        <img src="{{URL($product->image)}}" alt="" width="400px" height="200px">
+                                                                        <img src="{{URL('upload/'.request()->segment(2).'/'.$product->image)}}" alt="" style="width:100px;height:100px;">
 {{--                                                                        <img src="{{URL('upload/'.request()->segment(2).'/'.$product->image)}}" alt="" width="400px" height="200px">--}}
                                                                     </div>
                                                                 </div>

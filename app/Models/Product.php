@@ -5,6 +5,7 @@ namespace App\Models;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use DB;
 
 class Product extends Model
 {
@@ -15,7 +16,7 @@ class Product extends Model
 
     protected $fillable = [
         'title', 'slug', 'description', 'image',
-        'stock', 'price', 'brand_id',
+        'stock', 'price', 'brand_id', 'discount',
         'cat_id', 'child_cat_id', 'discount', 'status'
 
     ];
@@ -44,11 +45,15 @@ class Product extends Model
     public static function getAllProduct()
     {
         // return Product::latest('updated_at')->get();
-        return Product::orderBy('updated_at', 'DESC')->get();
+        return Product::orderBy('updated_at', 'DESC')->with('brand', 'category')->get();
     }
     public static function getProductCat($cat_id)
     {
         return Product::where(['cat_id' => $cat_id, 'status' => 'active'])->orderBy('id', 'DESC')->paginate(9)->withQueryString();
+    }
+    public static function getProductCatChild($child_cat_id)
+    {
+        return Product::where(['child_cat_id' => $child_cat_id, 'status' => 'active'])->orderBy('id', 'DESC')->paginate(9)->withQueryString();
     }
     public static function getProductDetail($slug)
     {

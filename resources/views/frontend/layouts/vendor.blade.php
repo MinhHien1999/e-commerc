@@ -3,30 +3,11 @@
     <div class="row px-xl-5">
         <div class="col">
             <div class="owl-carousel vendor-carousel">
+                @foreach(App\Models\Brand::orderBy('id', 'DESC')->where(['status' => 'active'])->limit(8)->get() as $brand)
                 <div class="vendor-item border p-4">
-                    <img src="{{asset('frontend')}}/img/vendor-1.jpg" alt="">
+                    <img src="{{URL('upload/brand/'.$brand->image)}}" alt="">
                 </div>
-                <div class="vendor-item border p-4">
-                    <img src="{{asset('frontend')}}/img/vendor-2.jpg" alt="">
-                </div>
-                <div class="vendor-item border p-4">
-                    <img src="{{asset('frontend')}}/img/vendor-3.jpg" alt="">
-                </div>
-                <div class="vendor-item border p-4">
-                    <img src="{{asset('frontend')}}/img/vendor-4.jpg" alt="">
-                </div>
-                <div class="vendor-item border p-4">
-                    <img src="{{asset('frontend')}}/img/vendor-5.jpg" alt="">
-                </div>
-                <div class="vendor-item border p-4">
-                    <img src="{{asset('frontend')}}/img/vendor-6.jpg" alt="">
-                </div>
-                <div class="vendor-item border p-4">
-                    <img src="{{asset('frontend')}}/img/vendor-7.jpg" alt="">
-                </div>
-                <div class="vendor-item border p-4">
-                    <img src="{{asset('frontend')}}/img/vendor-8.jpg" alt="">
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

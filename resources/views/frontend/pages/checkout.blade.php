@@ -113,8 +113,8 @@
                     {{-- @dd(Cart::content()) --}}
                     @foreach(Cart::content() as $items)
                         <div class="d-flex justify-content-between">
-                            <p>{{$items->name. ' (x'.$items->qty.')'}}</p>
-                            <p>{{number_format($items->price * $items->qty,0,',','.').' đ'}}</p>
+                            <p>{{substr_replace($items->name, "...", 45). ' (x'.$items->qty.')'}}</p>
+                            <span>{{number_format($items->price * $items->qty,0,',','.').' đ'}}</span>
                         </div>
                     @endforeach
                     <hr class="mt-0">

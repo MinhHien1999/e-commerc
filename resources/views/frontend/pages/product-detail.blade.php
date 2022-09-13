@@ -8,7 +8,7 @@
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner border">
                         <div class="carousel-item active">
-                            <img class="w-100 h-100" src="{{$product->image}}" alt="Image">
+                            <img class="w-100 h-100" src="{{URL('upload/product/'.$product->image)}}" alt="Image">
                         </div>
                         {{-- <div class="carousel-item">
                             <img class="w-100 h-100" src="{{$product->image}}" alt="Image">
@@ -43,7 +43,9 @@
                 </div>
                 <div class="d-flex align-items-center mb-4 pt-2">
                     <h3 class="font-weight-semi-bold mr-3">{{number_format($product->price - ($product->price * $product->discount/100),0,',','.').'đ'}}</h3>
-                    <h3 class="font-weight-semi-bold text-muted mr-3"><del>{{number_format($product->price,0,',','.').'đ'}}</del></h3>
+                    @if(!empty($product->discount))
+                        <h3 class="font-weight-semi-bold text-muted mr-3"><del>{{number_format($product->price,0,',','.').'đ'}}</del></h3>
+                    @endif
                 </div>
                 @if(!empty($product->brand->title))
                     <p class="mb-4" brand="{{$product->brand->title}}"><strong>Brand: </strong>{{$product->brand->title}}</p>
@@ -118,7 +120,7 @@
                         <button class="btn btn-primary px-3" id="singleItem" value="{{$product->id}}"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
                     </div>
                 @endif
-                <div class="d-flex pt-2">
+                {{-- <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
                     <div class="d-inline-flex">
                         <a class="text-dark px-2" href="">
@@ -134,7 +136,7 @@
                             <i class="fab fa-pinterest"></i>
                         </a>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
         <div class="row px-xl-5">

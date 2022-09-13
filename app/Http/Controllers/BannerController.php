@@ -107,7 +107,7 @@ class BannerController extends Controller
 
         if ($request->hasFile('image')) {
             $newImageName = time() . '-' . $request->image->getClientOriginalName();
-            $request->image->move(public_path('upload'), $newImageName);
+            $request->image->move(public_path('upload/banner'), $newImageName);
             $request->image = $newImageName;
             $data['image'] =  $newImageName;
         }

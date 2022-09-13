@@ -24,7 +24,7 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->unsignedBigInteger('cat_id')->nullable();
             $table->unsignedBigInteger('child_cat_id')->nullable();
-            $table->integer('discount')->default(0);
+            $table->integer('discount')->default(0)->nullable();
             $table->enum('status',['active','inactive'])->default('inactive');
 
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('SET NULL');
